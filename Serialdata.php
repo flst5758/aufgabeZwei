@@ -7,7 +7,7 @@
  */
 class Serialdata {
 	
-	public $_ID;
+	public $_SID;
 	public $_Title;
 	public $_numberOfPages;
 	public $_numberOfVolumes;
@@ -16,7 +16,7 @@ class Serialdata {
 	
 	
 	public function getID() {
-		return $this->_ID;
+		return $this->_SID;
 	}
 
 	public function getTitle() {
