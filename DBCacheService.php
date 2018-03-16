@@ -1,8 +1,9 @@
 <?php
 require_once 'SqlConnector.php';
+require_once 'SidService.php';
 
 /**
- * DBCacheService Cachlayer implementation - retrieves requested isbn-infos from db or from dataServices
+ * DBCacheService Cachlayer implementation - retrieves requested Serials from db or from dataServices
  *
  * @author Florian Steffen
  */
@@ -14,7 +15,7 @@ class DBCacheService implements SidService {
         $this->_dataService = $dataService;
     }
 
-    public function getData($sid = null) {
+    public function getData($sid = "SLZ", $title = "Lehrerzeitung", $numberOfPages = 300, $numberOfVolumes = 2) {
         $dbConnection = new SqlConnector("localhost", "root", "", "aufgabe_zwei");
         
         $stm=$dbConnection->prepare('SELECT `id`, `sid`, `title`, `numberOfPages`, `numberOfVolumes`, `digitizationCost`, `numberOfTB` FROM `Serialdata` WHERE sid = ?');
@@ -25,7 +26,7 @@ class DBCacheService implements SidService {
             return $this->convertToSerialdata($result);
         }
 //!
-        $serials = $this->_dataService->getData($sid);
+        $serials = $this->_dataService->getData($sid, $title, $numberOfPages, $numberOfVolumes);
         foreach ($serials as $Serialdata) {
             $stm=$dbConnection->prepare("INSERT INTO `Serialdata` (`id`, `sid`,`title`, `numberOfPages`, `numberOfVolumes`, `digitizationCost`, `numberOfTB`) VALUES (NULL, ?, ?, ?, ?, ?, ?);");
             $stm->bind_param("sssss", $Serialdata->getSid(), 

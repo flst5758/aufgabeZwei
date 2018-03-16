@@ -1,23 +1,59 @@
 <?php
 
-require_once 'IsbnService.php';
-require_once 'Metadata.php';
+require_once 'SidService.php';
+require_once 'Serialdata.php';
 
 /**
  * Description of IsbnServiceJson: gets information from worldcat REST-Service it returns it as matadata object
  *
  * @author MBlock, FSteffen
  */
-class IsbnServiceJson implements IsbnService {
+class SidServiceJson implements SidService {
 
 
     public function __construct() {
     }
 
-    public function getData($isbn = null) {
-        $temp = $this->getServiceData($isbn);
-        return $this->parseServiceData($temp);
+    public function getData($Sid = null, $Title = null, $numberOfPages = null, $numberOfCm = null, $numberOfVolumes = null) {
+        
+        $Sid = $this->$Sid;
+        $Title = $this->$Title;
+        $numberOfPages = $this->getNumberOfPages($numberOfPages, $numberOfCm);
+        $numberOfcm = $this->$numberOfCm;
+        $numberOfVolumes = $this->$numberOfVolumes;
+        $digitizationCost = $this->getDigitizationCost($numberOfPages);
+        $numberOfTB = $this->getNumberOfTB($numberOfPages);
+        
+        $serialdata = new Serialdata();
+        $serialdata ->setSid($Sid);
+        $serialdata ->setTitle($Title);
+        $serialdata ->setNumberOfPages($numberOfPages);
+        $serialdata ->setNumberOfVolumes($numberOfVolumes);
+        $serialdata ->setDigitizationCost($digitizationCost);
+        $serialdata ->setNumberOfTB($numberOfTB);
+        
+        
+        return array($serialdata);
     }
+    
+    private function getNumberOfPages($numberOfPages, $numberOfCm){
+        if($numberOfPages == null){
+            $numberOfPages = $numberOfCm * 150;
+        }
+        return $numberOfPages;
+    }
+    
+    private function getDigitizationCost($numberOfPages){
+        $digitizationCost = $numberOfPages * 0.25;
+        return $digitizationCost;
+    }
+    
+    private function getNumberOfTB($numberOfPages){
+        $numberOfTB = $numberOfPages * 20 * 0.000001;
+        return $numberOfTB;
+    }
+    
+    /*/* zum Objekt schnüren;
 
     private function getServiceData($isbn = null) {
         if (is_null($isbn)) {
@@ -45,20 +81,18 @@ class IsbnServiceJson implements IsbnService {
       //  echo "test 3";
         //echo $data;
         $attributes = $json->list[0];
-        $metadata = new Metadata();
+        $serialdata = new Serialdata();
 
-        $metadata->setIsbn($attributes->isbn[0]);
-        $metadata->setForm($attributes->form[0]);
-        $metadata->setYear($attributes->year);
-        $metadata->setLang($attributes->lang);
-        // property ed does not exist on all records
-        //$metadata->setEd($attributes->ed);
-        $metadata->setTitle($attributes->title);
-        $metadata->setAuthor($attributes->author);
-        $metadata->setPublisher($attributes->publisher);
-        $metadata->setCity($attributes->city);
+        $serialdata->setSid($attributes->Sid[0]);
+        $serialdata->setTitle($attributes->title);
+        $serialdata->setNumberOfPages($attributes->numberOfPages);
+        $serialdata->setNumberOfVolumes($attributes->numberOfVolumes);
+        $serialdata->setDigitizationCost($attributes->digitizationCost);
+        $serialdata->setNumberOfTB($attributes->numberOfTB);
 
-        return array($metadata);
+        return array($serialdata);
     }
+     * 
+     */
 
 }

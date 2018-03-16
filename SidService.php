@@ -7,6 +7,6 @@
  */
 interface SidService {
 	
-	public function getData($Sid = null);
+	public function getData($Sid = null, $title = null, $numberOfPages = 0, $numberOfVolumes = 0);
 	
 }

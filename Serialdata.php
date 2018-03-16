@@ -13,6 +13,8 @@ class Serialdata {
 	public $_numberOfVolumes;
 	public $_digitizationCost;
 	public $_numberOfTB;
+        
+        
 	
 	
 	public function getID() {
