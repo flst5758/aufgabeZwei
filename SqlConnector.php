@@ -35,7 +35,7 @@ class SqlConnector {//verwendet Adapter MySQLi
 		$this->_connection = mysqli_init();
 		
 		// @ Verhindert Fehlermeldungen die mit Funktionsaufruf möglicherweise erzeugt werden.
-		$this->_isConnected = @mysqli_real_connect($this->_connection, $this->_host, $this->_username, $this->_password, $this->_database, $this->_port);
+		$this->_isConnected = mysqli_real_connect($this->_connection, $this->_host, $this->_username, $this->_password, $this->_database, $this->_port);
 		
 		// Werfen einer Fehlermeldung wenn keine Verbindung hergestellt werden konnte.
 		if (!$this->_isConnected) {

@@ -29,32 +29,65 @@ class DBCacheService implements SidService {
         $serials = $this->_dataService->getData($sid, $title, $numberOfPages, $numberOfVolumes);
         foreach ($serials as $Serialdata) {
             $stm=$dbConnection->prepare("INSERT INTO `Serialdata` (`id`, `sid`,`title`, `numberOfPages`, `numberOfVolumes`, `digitizationCost`, `numberOfTB`) VALUES (NULL, ?, ?, ?, ?, ?, ?);");
-            $stm->bind_param("sssss", $Serialdata->getSid(), 
+            $stm->bind_param("ssssss", $Serialdata->getSid(), 
                 $Serialdata->getTitle(), 
                 $Serialdata->getNumberOfPages(),
                 $Serialdata->getNumberOfVolumes(),
                 $Serialdata->getDigitizationCost(),
-                $Serialdata->getNumberOfTB());
+                $Serialdata->getNumberOfTB());    
             $stm->execute();    
         }
         
         return $serials;
     }
     
+    public function findByTitle($title)
+    {
+        $dbConnection = new SqlConnector("localhost", "root", "", "aufgabe_zwei");
+        
+        $stm=$dbConnection->prepare('SELECT `id`, `sid`, `title`, `numberOfPages`, `numberOfVolumes`, `digitizationCost`, `numberOfTB` FROM `Serialdata` WHERE title like ?');
+        $title = "%".$title."%";
+        $stm->bind_param("s", $title);
+        $stm->execute();
+        $result = $stm->get_result();
+        
+        return $this->convertToSerialdata($result);
+    }
+    
+    public function findBySid($sid)
+    {
+        $dbConnection = new SqlConnector("localhost", "root", "", "aufgabe_zwei");
+        
+        $stm=$dbConnection->prepare('SELECT `id`, `sid`, `title`, `numberOfPages`, `numberOfVolumes`, `digitizationCost`, `numberOfTB` FROM `Serialdata` WHERE sid = ?');
+        $stm->bind_param("s", $sid);
+        $stm->execute();
+        $result = $stm->get_result();
+        
+        return $this->convertToSerialdata($result);
+
+    }
+            
     private function convertToSerialdata($result){
         $serials = array();
         while($row = $result->fetch_assoc())
         {
-            $Serialdata = new Serialdata();
+            $serialdata = new Serialdata();
 
-            $Serialdata->setSid($row['sid']);
-            $Serialdata->setTitle($row['title']);
-            $Serialdata->setNumberOfPages($row['numberOfPages']);
-            $Serialdata->setNumberOfVolumes($row['numberOfVolumes']);
-            $Serialdata->setDigitizationCost($row['digitizationCost']);
-            $Serialdata->setNumberOfTB($row['numberOfTB']);
+            $serialdata->_SID=$row['sid'];
+            $serialdata->_Title=$row['title'];
+            $serialdata->_numberOfPages=$row['numberOfPages'];
+            $serialdata->_numberOfTB=$row['numberOfTB'];
+            $serialdata->_numberOfVolumes=$row['numberOfVolumes'];
+            $serialdata->_digitizationCost=$row['digitizationCost'];
             
-            $serials[] = $Serialdata;
+//            $Serialdata->setSID($row['sid']);
+//            $Serialdata->setTitle($row['title']);
+//            $Serialdata->setNumberOfPages($row['numberOfPages']);
+//            $Serialdata->setNumberOfVolumes($row['numberOfVolumes']);
+//            $Serialdata->setDigitizationCost($row['digitizationCost']);
+//            $Serialdata->setNumberOfTB($row['numberOfTB']);
+            
+            $serials[] = $serialdata;
         }
         return $serials;
     }

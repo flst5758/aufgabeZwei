@@ -14,23 +14,30 @@ class SidServiceJson implements SidService {
     public function __construct() {
     }
 
-    public function getData($Sid = null, $Title = null, $numberOfPages = null, $numberOfCm = null, $numberOfVolumes = null) {
+    public function getData($Sid = null, $Title = null, $numberOfPages = null, $numberOfVolumes = null, $numberOfCm = null) {
         
-        $Sid = $this->$Sid;
-        $Title = $this->$Title;
+        //$Sid = $this->$Sid;
+        //$Title = $this->$Title;
         $numberOfPages = $this->getNumberOfPages($numberOfPages, $numberOfCm);
-        $numberOfcm = $this->$numberOfCm;
-        $numberOfVolumes = $this->$numberOfVolumes;
+        //$numberOfcm = $this->$numberOfCm;
+        //$numberOfVolumes = $this->$numberOfVolumes;
         $digitizationCost = $this->getDigitizationCost($numberOfPages);
         $numberOfTB = $this->getNumberOfTB($numberOfPages);
         
         $serialdata = new Serialdata();
-        $serialdata ->setSid($Sid);
-        $serialdata ->setTitle($Title);
-        $serialdata ->setNumberOfPages($numberOfPages);
-        $serialdata ->setNumberOfVolumes($numberOfVolumes);
-        $serialdata ->setDigitizationCost($digitizationCost);
-        $serialdata ->setNumberOfTB($numberOfTB);
+        $serialdata->_SID=$Sid;
+        $serialdata->_Title=$Title;
+        $serialdata->_numberOfPages=$numberOfPages;
+        $serialdata->_numberOfTB=$numberOfTB;
+        $serialdata->_numberOfVolumes=$numberOfVolumes;
+        $serialdata->_digitizationCost=$digitizationCost;
+        
+//        $serialdata ->setSid($Sid);
+//        $serialdata ->setTitle($Title);
+//        $serialdata ->setNumberOfPages($numberOfPages);
+//        $serialdata ->setNumberOfVolumes($numberOfVolumes);
+//        $serialdata ->setDigitizationCost($digitizationCost);
+//        $serialdata ->setNumberOfTB($numberOfTB);
         
         
         return array($serialdata);

@@ -17,7 +17,7 @@ class Serialdata {
         
 	
 	
-	public function getID() {
+	public function getSID() {
 		return $this->_SID;
 	}
 
@@ -25,7 +25,7 @@ class Serialdata {
 		return $this->_Title;
 	}
 
-	public function getNumberOfPage() {
+	public function getNumberOfPages() {
 		return $this->_numberOfPages;
 	}
 

@@ -6,25 +6,33 @@
  * 
  * @author FSteffen
  */
-require_once 'code/SidServiceJson.php';
-require_once 'code/DBCacheService.php';
-require_once 'code/Serialdata.php';
+require_once 'SidServiceJson.php';
+require_once 'DBCacheService.php';
+require_once 'Serialdata.php';
 $numberOfPages = 0;
-$sid = $_POST["ID"];
-$title = $_POST["Titel"];
-$sizeOfCollection = $_POST["Sammlungsumfang"];
-$measure = $_POST["Masseinheit"];
+
+$sid = !isset($_POST["sid"]) ? "" : $_POST["sid"];
+$title = $_POST["title"];
+$sizeOfCollection = $_POST["numberOfPages"];
+$measure = $_POST["measure"];
 $numberOfVolumes = $_POST["numberOfVolumes"];
 if($measure == "cm"){
-    $numberOfPages = $measure * 150;
+    $numberOfPages = $sizeOfCollection * 150;
 }else{
-    $numberOfPages = $measure;
+    $numberOfPages = $sizeOfCollection;
 }
 
 $service = new DBCacheService(new SidServiceJson($sid, $title, $numberOfPages, $numberOfVolumes));
-$books = $service->getData($sid, $title, $numberOfPages, $numberOfVolumes);
+  
+if(strlen($sid) < 3 || count($service->findBySid($sid)) > 0) {
+    // do nothing
+    http_response_code(500);
+    echo "Invalid SID or SID already exists!";
+}
+else {
+    $books = $service->getData($sid, $title, $numberOfPages, $numberOfVolumes);
 
-$mapBook = function($book) {return get_object_vars($book);}; 
-$json = array_map($mapBook, $books);
-echo json_encode($json, JSON_PRETTY_PRINT);
-
+    $mapBook = function($book) {return get_object_vars($book);}; 
+    $json = array_map($mapBook, $books);
+    echo json_encode($json, JSON_PRETTY_PRINT);
+}

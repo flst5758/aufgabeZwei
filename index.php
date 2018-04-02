@@ -10,7 +10,7 @@ and open the template in the editor.
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" crossorigin="anonymous">
         <script src="//ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
         <script src="Sid.js"></script>
-        <script src="errorStyle.css"></script>
+        <link rel="stylesheet" href="errorStyle.css"></links>
         <title>Zeitschriftendatenübermittlung</title>
     </head>
     <body>
